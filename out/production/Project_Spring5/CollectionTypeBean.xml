@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+   <!--集合类型属性注入-->
+    <bean id="stu" class="com.hbl.spring5.ioc.BeanBaseOnXML.setColletionType.Stu">
+        <!--数组类型属性注入-->
+        <property name="courses">
+            <array>
+                <value>java</value>
+                <value>sql</value>
+            </array>
+        </property>
+
+        <!--list类型属性注入-->
+        <property name="list">
+            <list>
+                <value>zhnag</value>
+                <value>huang</value>
+            </list>
+        </property>
+
+        <!--map类型属性注入-->
+        <property name="maps">
+            <map>
+                <entry key="JAVA" value="java"></entry>
+                <entry key="PHP" value="php"></entry>
+            </map>
+        </property>
+
+        <!--set类型属性注入-->
+        <property name="sets">
+            <set>
+                <value>mysql</value>
+                <value>redis</value>
+            </set>
+        </property>
+        <!--注入list集合类型，值是对象-->
+        <property name="courseList">
+            <list>
+                <ref bean="course1"></ref>
+                <ref bean="course2"></ref>
+            </list>
+        </property>
+    </bean>
+
+    <!--创建多个course对象-->
+    <bean id="course1" class="com.hbl.spring5.ioc.BeanBaseOnXML.setColletionType.Course">
+        <property name="cname" value="spring5"></property>
+    </bean>
+    <bean id="course2" class="com.hbl.spring5.ioc.BeanBaseOnXML.setColletionType.Course">
+        <property name="cname" value="spring--5"></property>
+    </bean>
+</beans>

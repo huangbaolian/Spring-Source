@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--内部bean-->
+    <bean id="emp" class="com.hbl.spring5.ioc.BeanBaseOnXML.setBaseProperty.Emp">
+        <!--设置两个普通属性-->
+        <property name="ename" value="lucy"></property>
+        <property name="gender" value="女"></property>
+        <!--设置对象类型属性-->
+        <property name="dept">
+            <bean id="dept" class="com.hbl.spring5.ioc.BeanBaseOnXML.setBaseProperty.Dept">
+                <property name="dname" value="anbao"></property>
+            </bean>
+        </property>
+    </bean>
+
+
+    <!--级联赋值1-->
+   <!-- <bean id="emp" class="Emp">
+        &lt;!&ndash;设置两个普通属性&ndash;&gt;
+        <property name="ename" value="lucy"></property>
+        <property name="gender" value="女"></property>
+        &lt;!&ndash;级联赋值&ndash;&gt;
+        <property name="dept" ref="dept"></property>
+    </bean>
+    <bean name="dept" class="Dept">
+        <property name="dname" value="anbao"></property>
+    </bean>-->
+
+    <!--级联赋值2-->
+   <!-- <bean id="emp" class="Emp">
+        &lt;!&ndash;设置两个普通属性&ndash;&gt;
+        <property name="ename" value="lucy"></property>
+        <property name="gender" value="女"></property>
+        &lt;!&ndash;级联赋值&ndash;&gt;
+        <property name="dept" ref="dept"></property>
+        &lt;!&ndash;用下面的方式赋值需要get方法&ndash;&gt;
+        <property name="dept.dname" value="anbao"></property>
+    </bean>-->
+
+</beans>

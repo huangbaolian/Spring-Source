@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--开启组件扫描
+        1.如果扫描多个包，多个包使用逗号隔开
+        2.或扫描包的上层目录
+     -->
+    <!--<context:component-scan base-package="com.hbl.spring5.BeanBaseOnAnnotation"></context:component-scan>-->
+
+
+    <!--实例1
+        use-default-filters="false" - 不适用默认的filter，使用自己配置的filter
+        include-filter - 设置扫描那些内容
+        下面表示只扫描BeanBaseOnAnnotation包中带Controller注解的内容
+    -->
+   <!-- <context:component-scan base-package="com.hbl.spring5.BeanBaseOnAnnotation" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>-->
+
+
+    <!--实例2
+        下面表示不扫描BeanBaseOnAnnotation包中带Controller注解的内容
+    -->
+    <!--<context:component-scan base-package="com.hbl.spring5.BeanBaseOnAnnotation">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+    </context:component-scan>-->
+</beans>

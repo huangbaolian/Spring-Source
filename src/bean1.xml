@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<!--user 对象创建
+    * name="provide_for_struts1"
+   -->
+    <bean id="user" class="com.hbl.spring5.ioc.BeanBaseOnXML.setBaseProperty.User" ></bean>
+
+<!-- set 注入属性   -->
+    <bean id="book" class="com.hbl.spring5.ioc.BeanBaseOnXML.setBaseProperty.Book" >
+        <!--使用property完成属性注入-->
+        <property name="bauther" value="aaa"></property>
+        <!--属性值包含特殊符号
+            1.进行转义：&lt; &gt
+            2.把带特殊符号内容写到CDATA
+        -->
+        <property name="bname" >
+            <value><![CDATA[南@$&京>]]></value>
+        </property>
+    </bean>
+    <!--++1.使用p名称空间注入-->
+    <!--<bean id="book" class="Book" p:bauther="aasss" p:bname="uwehu"></bean>-->
+<!-- 有参构造注入属性 -->
+    <bean id="orders" class="com.hbl.spring5.ioc.BeanBaseOnXML.setBaseProperty.Orders">
+        <constructor-arg name="oname" value="abc"></constructor-arg>
+        <constructor-arg name="address" value="zhongguo"></constructor-arg>
+    </bean>
+
+
+</beans>

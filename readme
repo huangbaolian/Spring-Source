@@ -1,0 +1,237 @@
+Spring5框架 简介：
+一.Spring框架概述
+   1.是一个轻量级的开源的JavaEE框架
+   2.Spring有两个核心部分：IOC+AOP
+   3.特点：（1）方便解耦，简化开发
+          （2）AOP编程支持
+          （3）方便程序测试
+          （4）可以整合其他优秀框架
+          （5）方便进行事物的操作
+          （6）降低API使用难度
+
+二.IOC容器--控制反转：把创建进对象的过程交给Spring进行管理--降低耦合度
+  1.底层原理
+   （1）XML解析,工厂模式,反射
+  2.IOC接口（BeanFactory/ApplicationContext）
+    (1) IOC思想基于IOC容器完成，IOC容器底层就是对象工厂
+    (2) BeanFactory:IOC容器基本实现，是Spring内部使用接口，一般不提供开发人员 --- 加载配置文件时候不会创建对象，在获取对象（使用）时创建对象
+        ApplicationContext：是BeanFactory接口的子接口，提供更多更强大的功能，一般由开发人员使用 --- 加载配置文件时就会创建对象
+    (3) ApplicationContext 的主要实现类
+        FileSystemXmlApplicationContext---加载电脑绝对路径
+        ClassPathXmlApplicationContext---加载项目相对路径
+  3.IOC操作Bean管理（基于XML/注解）
+    (1) 什么是Bean管理
+         Spring 创建对象
+         Spring 注入属性
+    (2) Bean管理操作（基于XML）
+        1. 基于XML创建对象
+           创建对象的时候，默认也是执行无参数构建方法
+        2.基于XML方式注入属性
+          DI:依赖注入，就是注入属性
+            第一种：使用Set方法进行注入 (++1.配置文件中使用p名称空间注入)
+            第二种：有参构造方法注入
+          a.注入属性-外部Bean
+             创建两个类service和dao
+             在service调用dao里面的方法
+             在Spring配置文件中进行配置
+          b.注入属性-内部bean和级联赋值
+             一对多关系,在实体类之间表示一对多 (如：员工对部门）
+          c.注入属性-XML注入集合属性
+             注入数组/List/Map/Set集合类型属性
+             在集合里面设置对象类型值
+             把集合注入提取出来-在配置文件中引入名称空间：util
+        3.基于XML的自动装配
+          自动装配：根据指定的装配规则（属性名称或者属性类型），spring自动将匹配的属性值进行注入
+        4.基于XML-引入外部文件
+          创建一个properties的外部文件，
+          在Spring的配置文件中，配置context的名称空间，把properties中的属性引入到Spring配置文件中
+          在spring配置文件使用标签引入外部文件
+    (2) Bean管理操作（基于注解方式）
+         格式：@注解名称（属性名称=属性值，属性名称=属性值。。。）--可以作用在类，方法，属性上面（目的：简化XML配置）
+          a. @Component
+          b. @Service
+          c. @Controller
+          d. @Repository
+          *上面四个注解功能是一样的，都可以用来创建bean实例
+        1.基于注解--创建对象
+          第一步，引入依赖：AOP
+          第二步，开启组件扫描
+          第三步，创建类，在类上添加创建对象注解
+        2.基于注解--实现属性注入
+          a. @AutoWired - 根据属性类型进行自动注入
+          b. @Qualifier - 根据属性名称进行注入     -  需要和@AutoWired一起使用
+          c. @Resource  - 可以根据类型注入，可以根据名称注入   - 是javax 包中的 --其他都是spring的
+          d. @Value     - 注入普通类型属性
+          第一步 把service和dao对象创建，在service和dao类添加创建对象注解
+          第二步 在service注入dao对象，在service类添加dao属性，在属性上使用注解
+        3.基于注解-纯注解开发 ---spring boot
+          第一步,创建配置类，替代XML
+          第二步，测试不一样了
+  4.IOC-bean管理（FactoryBean）
+    spring中有两种bean,一种普通bean,另一种工厂bean(FactoryBean)
+    (1).普通bean:在配置文件中定义bean类型就是返回类型
+    (2).工厂bean:在配置文件中定义的bean类型可以和返回类型不一样
+        第一步：创建类，让这个类作为工厂bean
+        第二步：实现FactoryBean接口里的方法，在实现的方法中定义返回的bean类型
+  5.IOC-bean管理(bean作用域)
+     (1).在spring里面，设置创建实例时单实例还是多实例
+     (2).在spring里，默认情况，bean是单实例
+     (3).如何设置单实例还是多实例--spring配置文件bean标签里面有属性（scope）用于设置单例/多例
+         scope属性值:a. 默认值：singleton,表示单实例，加载spring配置文件时就会创建单实例对象
+                    b. 第二个：prototype,表示多实例，不是在加载spring文件时创建，在调用getBean方法的时候创建多实例对象
+                    c. request/session
+  6.IOC-bean管理(bean生命周期)
+     从对象创建到销毁的过程
+     (1).通过构造器创建Bean实例（无参构造）
+     (2).为bean的属性设置值和对其他bean的引用（调用set方法）
+     (3).调用bean的初始化的方法(需要进行配置)
+     (4).bean可以使用了（对象获取到了）
+     (5).当容器关闭的时候，调用bean的销毁方法（需要配置销毁的方法）
+     bean的后置处理器--还有两步
+      在第三步之前--把bean实例传递bean后置处理器的方法--postProcessBeforeInitialization
+      在第三步之后--把bean实例传递bean后置处理器的方法--postProcessAfterInitialization
+      (1).创建类，实现接口BeanPostProcessor，创建后置处理器
+三.Aop--面向切面：不修改源代码进行功能增强
+  概念：面向切面
+  1.AOP底层原理
+     AOP底层使用动态代理
+     (1).有两种情况的动态代理
+         a. 有接口情况 , 使用JDK动态代理
+            创建接口实现类的代理代理对象，通过代理对象进行增强
+         b. 没有接口情况 ， 使用CGLIB动态代理
+            创建当前类子类的代理对象
+  2.AOP - JDK动态代理
+     (1).使用JDK动态代理,使用proxy类里面的方法
+         newProxyInstance(ClassLoader loader,类<?>[] interfaces,InvocationHandler h) - 返回指定接口的代理类的实例
+         第一个参数：类加载器
+         第二个参数：增强方法所在的类，这个类实现的接口，支持多个接口
+         第三个参数：实现这个接口InvocationHandler,创建进代理对象，写增强的方法
+  3.AOP - 操作术语
+     (1).连接点 ：类里哪些方法可以被增强，这些方法称为连接点
+     (2).切入点 ：实际被真正增强的方法，称为切入点
+     (3).通知（增强）：实际增强的逻辑部分，称为通知（前置通知，后置通知，环绕通知，异常通知，最终通知）
+     (4).切面 ：把通知应用到切入点的过程，称为切面
+  4.AOP - 准备工作-AspectJ
+     Spring框架一般基于AspectJ实现AOP操作
+     (1).基于XML配置文件实现
+     (2).基于注解方式实现（使用）
+      a.引入依赖-AspectJ
+      b.切入点表达式 - 知道对那个类里面的那个方法进行增强
+        execution([权限修饰符][返回类型][类全路径][方法名称]([参数列表]))
+  5.AOP-AspectJ注解
+      (1).创建类，在类中定义方法
+      (2).创建增强类（编写增强逻辑）,在里面创建方法，让不同的方法代表不同通知类型
+      (3).进行通知的配置
+          a.在spring配置文件中开启注解扫描
+          b.使用注解创建User和UserProxy对象
+          c.在增强类上面添加注解@Aspect
+          d.在Spring配置文件中开启生成代理对象
+      (4).配置不同类型的通知
+          在增强类里面，在通知方法上面添加通知类型注解,使用切入点表达式
+      (5).相同切入点抽取 -  @Pointcut
+      (6).有多个增强类对同一个方法进行增强，设置增强类的优先级 - @Order
+  6.AOP-AspectJ配置文件
+      在Spring配置文件中配置切入点
+  7.纯注解：@EnableAspectJAutoProxy(proxyTargetClass = true)
+四.JdbcTemplate
+  1.概念：Spring对JDBC进行封装，使用JdbcTemplate方便对数据库的操作
+  增删改查=批量操作（batchUpdate）
+五.事务管理
+  概念：事务时数据库操作最基本单元，逻辑上一组操作，要么都成功，如果有一个失败所有操作都失败
+  1.事务的四个特性(ACID)
+     a. 原子性
+     b. 一致性
+     c. 隔离性
+     d. 持久性
+  2.事务管理操作（搭建环境）--银行转账
+    事务一般添加到JavaEE三层结构里面的Service层（业务逻辑层）
+     (1).有两种方式：编程式事务管理 和 声明式事务管理（使用）
+  3.声明式事务管理---底层使用AOP原理
+     (1).基于注解方式 (使用)
+         第一步. 在Spring配置文件中配置事务管理器
+         第二步. 在Spring配置文件开启事务注解
+                引入名称空间:tx
+         第三步. 在Service类上面(或者在service类里面的方法上面)添加事务注解
+                添加到类上：表示这个类所有方法都添加事务
+                添加到方法上：表示为这个方法添加事务
+         a.事务操作 - 参数配置
+            在service类上面添加注解@Transactional，在这个注解里面可以配置事务相关参数
+             propagation   -  事务传播行为 ：多 事务方法（对数据库数据进行变化的操作）直接调用，这个过程中事务是如何进行管理的，如：一个add方法直接调用update方法，在add方法上加了Transactional
+                                          Spring 框架中事务传播行为有7种：REQUIRED, REQUIRED_NEW,SUPPORTS...
+             isolation     -  事务隔离级别 ：事务有特效称为隔离线，多事务操作之间不会产生影响，不考虑隔离性产生很多问题，
+                                          三个读问题：脏读，不可重复读，虚（幻）读
+                                          脏读：一个未提交事务读取到另一个未提交事务的数据
+                                          不可重复读：一个未提交事务读取到另一个提交事务修改数据
+                                          虚（幻）读：一个未提交事务读取到另一提交事务添加数据
+             timeout       -  超时时间    :事务需要在一定时间内提交，如果不提交会回滚，默认值是-1，设置时间以秒为单位
+             readOnly      -  是否只读    :默认false
+             rollbackFor   -  回滚       :设置出现哪些异常进行回滚
+             noRollbackFor -  不回滚     :设置出现哪些异常不进行回滚
+     (2).基于XML配置文件方式
+         第一步，配置事务管理器
+         第二步，配置通知
+         第三步，配置切入点和切面
+     (3).纯注解:创建配置类累啊替代XML配置文件
+  4.Spring事务管理API
+     (1).提供一个接口，代表事务管理器，这个接口针对不同的框架提供不同的实现类 --PlatformTransactionManager
+六.Spring5新特性
+  Spring5基于Java8,运行时兼容JDK9
+  1.整合日志框架-Spring5自带了通用的日志封装
+    Spring5已移除Log4jConfigListener,官方建议Log4j2
+    (1).Spring5框架整合Log4j2
+        第一步 引入log4j的4个jar包
+        第二步 创建log4j2.xml配置文件
+  2.核心容器-支持@nullable 和 函数式风格
+    (1).@nullable注解 - 可以使用在方法，属性，参数上面，表示返回值可以为空
+    (2).函数式风格GenericApplicationContext
+  3.整合JUnit5单元测试框架
+  4.Spring WebFlux---另一个demo
+    (1).概念
+         base on：SpringMVC ， SpringBoot, Maven, java8新特性
+         a.是Spring5添加新的模块，用于web开发的，功能SpringMVC类似，使用响应式编程出现的框架
+         b.传统的web框架，如springmvc基于Servlet容器，WebFlux是一种异步非阻塞的框架，异步非阻塞的框架在Servlet3.1以后才支持，核心是基于Reactor的相关API的实现
+         c.异步非阻塞:*异步和同步 针对 调用者
+                    *阻塞和非阻塞 针对 被调用者
+         d.特点：非阻塞：在有限的资源下，提高系统吞吐量和伸缩性，以reactor为基础实现响应式编程
+                函数式编程：使用java8函数式编程实现路由请求
+    (2).响应式编程(Reactive)
+         响应式编程是一种面向数据流和变化传播的编程范式。这意味着可以在编程语言中很方便地表达静态或动态的数据流，而相关的计算模型会自动将变化的值通过数据流进行传播
+         a.java8以及之前的版本
+           *提供观察者模式两个类:Observer和Observable
+         b.Java9及以上 Flow(publisher , subscriber)
+         c.reactor实现
+            (1).响应式编程中，reactor是满足Reactive的规范框架
+            (2).reactor有两个核心类，Mono和Flux,这两个类都实现接口Publisher,提高丰富操作符。Flux对象实现发布者，返回N个元素；Mono实现发布至，返回0或者1个元素
+            (3).Flux和Mono都是数据流的发布者。使用Flux和Mono都可以发出三种数据信号：元素值，错误信号，完成信号。
+                错误信号，完成信号都代表终止信号，告诉订阅者数据流结束了,不能共存。错误信号也是终止信号同事把错误信息发给订阅者
+            (4).操作符：对数据流进行的操作，成为操作符
+                map: 元素映射成为新元素
+                flatmap: 元素映射成为流
+    (3).Spring WebFlux执行流程和核心API
+        是基于Reactor，默认容器是Netty，Netty是高性能，基于异步事件的NIO框架（异步非阻塞）
+        a.Netty
+           *BIO-阻塞
+           *NIO-非阻塞
+        b.SpringWebFlux执行过程和SpringMVC相似
+          *SpringWebFlux核心控制器:DispatchHandler,实现接口WebHandler
+          *接口WebHandler有一个方法handle()--根据http请求信息获取对应mapping,调用具体的业务方法,返回处理结果
+          *DispatchHandler：负责请求的处理
+          *HandlerMapping：请求查询到处理的方法
+          *HandlerAdapter：真正负责请求处理
+          *HandlerResultHandler：响应结果处理
+        c.SpringWebFlux实现函数式编程，有两个接口：RouterFunction(路由处理)和HandlerFunction(处理函数)
+    (4).Spring WebFlux实现方式(基于注解编程模型)--只需要把相关以来配置到项目中，springBoot自动引入配置相关运行器，默认情况下使用Netty服务器
+        a.引入依赖：spring-boot-starter-webflux
+        b.配置启动的端口号
+        c.创建包和相关类和方法
+        d.创建controller
+    (5).Spring WebFlux实现方式(基于函数式编程模型)
+        a.需要自己初始化服务器
+        b.有两个核心接口RouterFunction(路由处理：请求转发给响应的handler)和HandlerFunction(处理请求生成响应的函数)。核心任务定义两个函数式街楼的实现并且启动需要的服务器
+        c.请求和响应不再是ServletRequest和ServletResponse,而是ServerRequest和ServerResponse
+        第一步，创建Handler，替代Controller
+        第二步，初始化服务器，编写Router
+        第三步，创建服务器完成适配
+        第四步，最终调用
+               使用webClient调用
+

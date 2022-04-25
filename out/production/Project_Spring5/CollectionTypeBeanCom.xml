@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+   <!-- 使用util标签把集合注入提取出来-->
+   <util:list id="bookList">
+       <value>abook</value>
+       <value>bbook</value>
+       <value>cbook</value>
+       <value>dbook</value>
+   </util:list>
+    <!--提取出来的list使用-->
+    <bean id="book" class="com.hbl.spring5.ioc.BeanBaseOnXML.setColletionType.Book">
+        <property name="list" ref="bookList"></property>
+    </bean>
+</beans>
